@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Warm palette. Dark is the default; light is applied via [data-theme="light"]. */
+:root {
+  --bg: #0c0907;
+  --surface: #15110e;
+  --border: #2a231d;
+  --text: #f6f1ea;
+  --muted: #a39a8f;
+  --primary: #ffa23a;
+  --secondary: #3a2410;
+  --accent: #ff5a36;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #fbf9f6;
+  --surface: #ffffff;
+  --border: #e8e2da;
+  --text: #14100c;
+  --muted: #6b6258;
+  --primary: #c25e00;
+  --secondary: #ffe8cc;
+  --accent: #d93a17;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-shiny-text: shiny-text 8s infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes shiny-text {
+  0%, 90%, 100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+  30%, 60% {
+    background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
+}
+
+html { background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+body { min-height: 100dvh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { text-wrap: balance; letter-spacing: -0.02em; }
+p { text-wrap: pretty; }
+::selection { background: var(--primary); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+/* page transitions */
+@keyframes rise-out { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(18px); } }
+
+/* ---- Glass (functional layer only: nav, toggles, floating controls) ---- */
+.glass {
+  background: color-mix(in oklab, var(--surface) 55%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid color-mix(in oklab, var(--text) 12%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--text) 18%, transparent),
+    0 8px 32px -8px rgb(0 0 0 / 0.35);
+}
+:root[data-theme="light"] .glass {
+  background: color-mix(in oklab, #fff 55%, transparent);
+  box-shadow: inset 0 1px 0 #fff, 0 8px 32px -12px rgb(60 30 0 / 0.25);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  .glass { background: var(--surface); border-color: var(--text); }
+}
+
+/* circular reveal when switching theme */
+html[data-theme-vt]::view-transition-old(root),
+html[data-theme-vt]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html[data-theme-vt]::view-transition-new(root) { animation: theme-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--tx, 50%) var(--ty, 0%)); }
+  to { clip-path: circle(150vmax at var(--tx, 50%) var(--ty, 0%)); }
+}

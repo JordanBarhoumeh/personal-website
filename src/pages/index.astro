@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero';
+import Showcase from '../components/Showcase';
+---
+<Base>
+  <Hero client:only="react" />
+  <Showcase client:load />
+</Base>

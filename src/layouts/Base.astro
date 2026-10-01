@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CursorGlow from '../components/CursorGlow';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props { title?: string; description?: string }
+const { title, description = 'Jordan Barhoumeh — apps, AI/ML and the build log.' } = Astro.props;
+const rise = {
+  forwards: { old: { name: 'rise-out', duration: '0.18s', easing: 'ease-in', fillMode: 'forwards' }, new: { name: 'rise-in', duration: '0.45s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'backwards' } },
+  backwards: { old: { name: 'rise-out', duration: '0.18s', easing: 'ease-in', fillMode: 'forwards' }, new: { name: 'rise-in', duration: '0.45s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'backwards' } },
+};
+const fullTitle = title ? `${title} · Jordan Barhoumeh` : 'Jordan Barhoumeh';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <title>{fullTitle}</title>
+    <ClientRouter />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        else if (matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme = 'light';
+      } catch {}
+      // keep the chosen theme across client-side page swaps
+      document.addEventListener('astro:before-swap', (e) => {
+        const t = document.documentElement.dataset.theme;
+        if (t) e.newDocument.documentElement.dataset.theme = t;
+        else delete e.newDocument.documentElement.dataset.theme;
+      });
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-bg">Skip to content</a>
+    <CursorGlow client:only="react" transition:persist />
+    <Nav />
+    <main id="main" transition:animate={rise}><slot /></main>
+    <Footer />
+  </body>
+</html>
