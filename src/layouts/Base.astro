@@ -6,7 +6,7 @@ import CursorGlow from '../components/CursorGlow';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props { title?: string; description?: string }
-const { title, description = 'Jordan Barhoumeh — apps, AI/ML and the build log.' } = Astro.props;
+const { title, description = 'Jordan Barhoumeh: data scientist, AI engineer and app developer.' } = Astro.props;
 const rise = {
   forwards: { old: { name: 'rise-out', duration: '0.18s', easing: 'ease-in', fillMode: 'forwards' }, new: { name: 'rise-in', duration: '0.45s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'backwards' } },
   backwards: { old: { name: 'rise-out', duration: '0.18s', easing: 'ease-in', fillMode: 'forwards' }, new: { name: 'rise-in', duration: '0.45s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'backwards' } },
@@ -26,6 +26,7 @@ const fullTitle = title ? `${title} · Jordan Barhoumeh` : 'Jordan Barhoumeh';
     <title>{fullTitle}</title>
     <ClientRouter />
     <script is:inline>
+      document.documentElement.classList.add('js');
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
@@ -45,5 +46,27 @@ const fullTitle = title ? `${title} · Jordan Barhoumeh` : 'Jordan Barhoumeh';
     <Nav />
     <main id="main" transition:animate={rise}><slot /></main>
     <Footer />
+    <script>
+      // scroll-in reveal for .reveal elements (re-run after each client-side navigation)
+      function initReveal() {
+        const els = document.querySelectorAll<HTMLElement>('.reveal:not(.in)');
+        if (!('IntersectionObserver' in window)) return els.forEach((el) => el.classList.add('in'));
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        }, { rootMargin: '0px 0px -8% 0px' });
+        els.forEach((el) => io.observe(el));
+      }
+      document.addEventListener('astro:page-load', initReveal);
+    </script>
+    <script>
+      // cursor-following spotlight for .spot cards
+      document.addEventListener('pointermove', (e) => {
+        const el = (e.target as Element).closest?.('.spot') as HTMLElement | null;
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        el.style.setProperty('--my', `${e.clientY - r.top}px`);
+      }, { passive: true });
+    </script>
   </body>
 </html>

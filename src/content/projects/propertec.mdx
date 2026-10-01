@@ -1,0 +1,47 @@
+---
+title: Propertec
+summary: AI-powered property and suburb research reports for buyer's agents, built on real NSW government data and a large language model.
+period: "2026"
+order: 2
+featured: true
+kind: AI SaaS product
+status: In development
+tags: [Generative AI, Gemini, React, TypeScript, Firebase, BigQuery, Stripe, Google Cloud]
+highlights:
+  - Seven public and live data sources combined into one report
+  - Hazard risks come from the planning API, never from the model
+  - Scheduled data pipelines keep sales and market data fresh
+  - Subscription billing with embedded checkout
+---
+
+## Overview
+
+Propertec generates property and suburb research reports for buyer's agents working in the NSW market. An agent enters an address or suburb, chooses whether the buyer is an investor or an owner-occupier, and gets back a structured report: an overview, suburb context, pros and cons, and comparable sales.
+
+## Real data, then AI
+
+The report is not written from the model's memory. For every request, the backend first assembles context from real sources:
+
+- **Sales history and comparable sales** from the NSW Valuer General.
+- **Demographics, income and housing mix** from the 2021 ABS Census.
+- **Crime scores and trends** from NSW BOCSAR.
+- **Rental bond data** for median rent and yield estimates, from NSW Fair Trading.
+- **Flood, bushfire, heritage and zoning** for the exact address, live from the NSW ePlanning API.
+- **Nearby transit, schools, shops and parks** from Google Maps Places.
+- **Recent development applications** in the suburb from the NSW Planning Portal.
+
+That context is passed to Gemini 2.5 Pro, which returns the report as structured JSON.
+
+## Keeping the model honest
+
+Property advice has to be right, so the design limits what the model is trusted with. Hazard risks such as flood, bushfire and heritage are fetched from the planning API and written over whatever the model returns, so the model cannot invent them. A low temperature keeps the writing consistent, and the structured output means the interface always renders predictable sections.
+
+## The data pipeline
+
+Government datasets arrive as large bulk files in different formats, from fixed-width sales files to spreadsheets and CSVs. Scheduled jobs on Google Cloud ingest and clean them into BigQuery and Firestore, and each job is idempotent so it can be re-run safely. Sales data refreshes weekly.
+
+## The product around it
+
+The app is a React and TypeScript single-page application on Firebase, with a Node API behind it. Agents can link reports to clients, take notes, and export. Access is tiered by subscription, with embedded Stripe checkout so payment happens inside the app.
+
+Right now it covers NSW only.

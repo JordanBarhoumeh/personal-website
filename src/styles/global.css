@@ -110,3 +110,24 @@ html[data-theme-vt]::view-transition-new(root) { animation: theme-reveal 0.6s cu
   from { clip-path: circle(0 at var(--tx, 50%) var(--ty, 0%)); }
   to { clip-path: circle(150vmax at var(--tx, 50%) var(--ty, 0%)); }
 }
+
+/* long-form text (case studies, blog) */
+@plugin "@tailwindcss/typography";
+.prose {
+  --tw-prose-body: color-mix(in oklab, var(--text) 82%, transparent);
+  --tw-prose-headings: var(--text);
+  --tw-prose-bold: var(--text);
+  --tw-prose-links: var(--primary);
+  --tw-prose-code: var(--text);
+  --tw-prose-hr: var(--border);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-quotes: var(--text);
+  --tw-prose-quote-borders: var(--primary);
+}
+.prose h2 { margin-top: 2.5em; font-size: 1.5rem; letter-spacing: -0.02em; }
+.prose :where(p) { line-height: 1.75; }
+
+/* scroll-in reveal */
+.js .reveal { opacity: 0; transform: translateY(18px); filter: blur(6px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1), filter .7s cubic-bezier(.16,1,.3,1); }
+.js .reveal.in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; filter: none; transition: none; } }

@@ -1,0 +1,17 @@
+---
+interface Props { index?: number; name?: string; class?: string }
+const { index = 0, name, class: cls = '' } = Astro.props;
+const shifts = [[20, 30, 80, 70], [75, 25, 25, 80], [50, 80, 85, 20]];
+const [ax, ay, bx, by] = shifts[index % shifts.length];
+---
+<div
+  class:list={['relative overflow-hidden rounded-xl', cls]}
+  style={`background:
+    radial-gradient(60% 80% at ${ax}% ${ay}%, color-mix(in oklab, var(--primary) 70%, transparent), transparent 70%),
+    radial-gradient(55% 75% at ${bx}% ${by}%, color-mix(in oklab, var(--accent) 65%, transparent), transparent 70%),
+    var(--secondary);`}
+  transition:name={name}
+>
+  <div class="absolute inset-0 opacity-[0.18] mix-blend-overlay" style="background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;)"></div>
+  <slot />
+</div>

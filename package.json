@@ -18,6 +18,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@react-three/fiber": "^9.8.1",
     "@shadergradient/react": "^2.4.20",
+    "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

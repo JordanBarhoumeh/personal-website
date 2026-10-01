@@ -1,9 +1,39 @@
 ---
+import { getCollection } from 'astro:content';
+import { ArrowUpRight } from 'lucide-react';
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero';
-import Showcase from '../components/Showcase';
+import StackMarquee from '../components/StackMarquee';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const featured = (await getCollection('projects'))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 ---
 <Base>
   <Hero client:only="react" />
-  <Showcase client:load />
+  <StackMarquee client:load />
+
+  <section class="mx-auto max-w-5xl px-6 py-28">
+    <div class="reveal mb-10 flex items-end justify-between">
+      <div>
+        <p class="font-mono text-sm text-primary">Selected work</p>
+        <h2 class="mt-2 text-4xl font-semibold sm:text-5xl">Things I have built</h2>
+      </div>
+      <a href="/projects" class="hidden items-center gap-1 text-sm text-muted transition-colors hover:text-text sm:inline-flex">
+        All projects <ArrowUpRight className="h-4 w-4" />
+      </a>
+    </div>
+    <div class="grid gap-5 lg:grid-cols-3">
+      {featured.map((p, i) => (
+        <div class="reveal" style={`transition-delay:${i * 80}ms`}>
+          <ProjectCard slug={p.id} index={i} {...p.data} />
+        </div>
+      ))}
+    </div>
+    <a href="/projects" class="mt-8 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-text sm:hidden">
+      All projects <ArrowUpRight className="h-4 w-4" />
+    </a>
+  </section>
 </Base>

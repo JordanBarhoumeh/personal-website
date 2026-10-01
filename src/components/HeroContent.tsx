@@ -4,7 +4,7 @@ import LiquidGlass from "./Glass";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 
-const words = ["Headline", "goes", "here"];
+const lines = ["Data Scientist", "AI Engineer", "App Dev"];
 
 export default function HeroContent() {
   return (
@@ -19,32 +19,34 @@ export default function HeroContent() {
         </div>
       </BlurFade>
 
-      <h1 className="max-w-4xl text-6xl font-semibold leading-[0.98] sm:text-8xl">
-        {words.map((w, i) => (
-          <span key={w} className={`inline-block overflow-hidden align-bottom ${i < words.length - 1 ? "mr-[0.25em]" : ""}`}>
+      <h1 className="max-w-4xl text-6xl font-semibold leading-[1.02] sm:text-8xl">
+        {lines.map((line, i) => (
+          <span key={line} className="block overflow-hidden pb-[0.08em]">
             <motion.span
-              className="inline-block"
-              initial={{ y: "110%", rotate: 4 }}
+              className="block"
+              initial={{ y: "110%", rotate: 3 }}
               animate={{ y: 0, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, delay: 0.15 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
             >
-              {w}
+              {line}
+              {i === lines.length - 1 && (
+                <motion.span
+                  className="inline-block text-primary"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8, type: "spring", stiffness: 300, damping: 12 }}
+                >
+                  .
+                </motion.span>
+              )}
             </motion.span>
           </span>
         ))}
-        <motion.span
-          className="text-primary"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7, type: "spring", stiffness: 300, damping: 12 }}
-        >
-          .
-        </motion.span>
       </h1>
 
       <BlurFade delay={0.55}>
         <p className="mt-8 max-w-xl text-lg text-text/80 sm:text-xl">
-          Placeholder for the one-line value proposition. Data science background, working in AI and ML, building apps in public.
+          Jordan Barhoumeh. AI/ML engineer by day, self-taught app dev by night.
         </p>
       </BlurFade>
 

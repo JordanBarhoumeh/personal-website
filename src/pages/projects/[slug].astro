@@ -1,0 +1,84 @@
+---
+import { getCollection, render } from 'astro:content';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
+import Base from '../../layouts/Base.astro';
+import ProjectCover from '../../components/ProjectCover.astro';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, index: i, prev: all[i - 1], next: all[i + 1] },
+  }));
+}
+const { entry, index, prev, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const meta = [
+  { k: 'Timeline', v: d.period },
+  { k: 'Type', v: d.kind },
+  ...(d.status ? [{ k: 'Status', v: d.status }] : []),
+  ...(d.association ? [{ k: 'With', v: d.association }] : []),
+];
+---
+<Base title={d.title} description={d.summary}>
+  <article class="mx-auto max-w-3xl px-6 pb-24 pt-32">
+    <a href="/projects" class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-text"><ArrowLeft className="h-4 w-4" /> All projects</a>
+    <h1 class="mt-6 text-4xl font-semibold leading-[1.05] sm:text-6xl" transition:name={`title-${entry.id}`}>{d.title}</h1>
+    <p class="mt-5 text-lg text-muted sm:text-xl">{d.summary}</p>
+
+    <ProjectCover index={index} name={`cover-${entry.id}`} class="mt-10 h-56 sm:h-80" />
+
+    <dl class="mt-8 grid gap-6 border-y border-border py-6 sm:grid-cols-2">
+      {meta.map((m) => (
+        <div>
+          <dt class="font-mono text-xs uppercase tracking-wider text-muted">{m.k}</dt>
+          <dd class="mt-1.5">{m.v}</dd>
+        </div>
+      ))}
+    </dl>
+
+    {d.links.length > 0 && (
+      <div class="mt-6 flex flex-wrap gap-3">
+        {d.links.map((l, i) => (
+          <a href={l.href} target="_blank" rel="noopener noreferrer"
+            class:list={['inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium transition-transform hover:scale-[1.03]', i === 0 ? 'bg-primary text-bg' : 'border border-border hover:border-primary/60']}>
+            {l.label} <ArrowUpRight className="h-4 w-4" />
+          </a>
+        ))}
+      </div>
+    )}
+
+    <ul class="mt-8 flex flex-wrap gap-2" aria-label="Technologies">
+      {d.tags.map((t) => <li class="rounded-full border border-border px-3 py-1 font-mono text-xs text-muted">{t}</li>)}
+    </ul>
+
+    <div class="prose prose-lg mt-12 max-w-none">
+      <Content />
+    </div>
+
+    <section class="mt-14" aria-labelledby="highlights">
+      <h2 id="highlights" class="font-mono text-sm text-primary">Highlights</h2>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+        {d.highlights.map((h) => (
+          <li class="rounded-xl border border-border bg-surface px-4 py-3.5 text-text/90">{h}</li>
+        ))}
+      </ul>
+    </section>
+
+    <nav class="mt-20 grid gap-4 border-t border-border pt-8 sm:grid-cols-2" aria-label="More projects">
+      {prev ? (
+        <a href={`/projects/${prev.id}`} class="group rounded-xl border border-border p-4 transition-colors hover:border-primary/60">
+          <span class="inline-flex items-center gap-1 font-mono text-xs text-muted"><ArrowLeft className="h-3.5 w-3.5" /> Previous</span>
+          <span class="mt-1 block font-medium group-hover:text-primary">{prev.data.title}</span>
+        </a>
+      ) : <span />}
+      {next && (
+        <a href={`/projects/${next.id}`} class="group rounded-xl border border-border p-4 text-right transition-colors hover:border-primary/60">
+          <span class="inline-flex items-center gap-1 font-mono text-xs text-muted">Next <ArrowRight className="h-3.5 w-3.5" /></span>
+          <span class="mt-1 block font-medium group-hover:text-primary">{next.data.title}</span>
+        </a>
+      )}
+    </nav>
+  </article>
+</Base>
