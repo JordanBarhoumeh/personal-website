@@ -1,9 +1,44 @@
 ---
+import { ArrowUpRight } from 'lucide-react';
 import Base from '../layouts/Base.astro';
+import CopyEmail from '../components/CopyEmail';
+import { socialLinks } from '../data/profile';
+
+const email = socialLinks.email.replace('mailto:', '');
+const elsewhere = [
+  { label: 'LinkedIn', handle: 'jordan-barhoumeh', href: socialLinks.linkedin },
+  { label: 'GitHub', handle: 'JordanBarhoumeh', href: 'https://github.com/JordanBarhoumeh' },
+];
 ---
-<Base title="Contact">
-  <section class="mx-auto max-w-5xl px-6 py-24">
-    <h1 class="text-4xl font-semibold sm:text-5xl">Contact</h1>
-    <p class="mt-4 text-muted">Coming together soon.</p>
+<Base title="Contact" description="Get in touch with Jordan Barhoumeh.">
+  <section class="mx-auto max-w-5xl px-6 pb-20 pt-32">
+    <p class="font-mono text-sm text-primary">Contact</p>
+    <h1 class="mt-3 max-w-3xl text-5xl font-semibold leading-[1.02] sm:text-7xl">Say hello<span class="text-primary">.</span></h1>
+    <p class="mt-6 max-w-xl text-lg text-muted">Email is the best way to reach me. Whether it is work, a project, or just a question about something I built, I read everything.</p>
+
+    <div class="reveal mt-14 rounded-3xl border border-border bg-surface p-6 sm:p-10">
+      <p class="mb-4 font-mono text-xs uppercase tracking-wider text-muted">Email</p>
+      <CopyEmail client:load email={email} />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-6 pb-28">
+    <p class="font-mono text-xs uppercase tracking-wider text-muted">Elsewhere</p>
+    <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+      {elsewhere.map((l, i) => (
+        <li class="reveal" style={`transition-delay:${i * 80}ms`}>
+          <a href={l.href} target="_blank" rel="noopener noreferrer"
+            class="spot group relative flex items-center justify-between overflow-hidden rounded-2xl border border-border bg-surface p-6 transition-transform duration-300 hover:-translate-y-1">
+            <div class="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              style="background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%), color-mix(in oklab, var(--primary) 18%, transparent), transparent 60%)"></div>
+            <div class="relative">
+              <p class="text-xl font-semibold">{l.label}</p>
+              <p class="mt-1 font-mono text-sm text-muted">{l.handle}</p>
+            </div>
+            <ArrowUpRight className="relative h-5 w-5 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
+          </a>
+        </li>
+      ))}
+    </ul>
   </section>
 </Base>
