@@ -16,7 +16,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
     {posts.length === 0 ? (
       <div class="reveal rounded-2xl border border-dashed border-border p-10 text-center">
         <p class="text-lg">The first post is on its way.</p>
-        <p class="mt-2 text-muted">In the meantime, take a look at the <a href="/projects" class="text-primary underline-offset-4 hover:underline">projects</a>.</p>
+        <p class="mt-2 text-muted">In the meantime, take a look at the <a href="/projects" class="text-primary underline underline-offset-4">projects</a>.</p>
       </div>
     ) : (
       <>

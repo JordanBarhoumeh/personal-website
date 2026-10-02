@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import { ArrowUpRight } from 'lucide-react';
 import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero';
+import Hero from '../components/Hero.astro';
 import StackMarquee from '../components/StackMarquee';
 import ProjectCard from '../components/ProjectCard.astro';
 
@@ -12,7 +12,7 @@ const featured = (await getCollection('projects'))
   .slice(0, 3);
 ---
 <Base>
-  <Hero client:only="react" />
+  <Hero />
   <StackMarquee client:load />
 
   <section class="mx-auto max-w-5xl px-6 py-28">

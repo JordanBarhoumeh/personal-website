@@ -13,7 +13,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   <section class="mx-auto max-w-5xl px-6 pb-28">
     <div class="grid gap-5 md:grid-cols-2">
       {projects.map((p, i) => (
-        <ProjectCard slug={p.id} index={i} large {...p.data} />
+        <ProjectCard as="h2" slug={p.id} index={i} large {...p.data} />
       ))}
     </div>
   </section>

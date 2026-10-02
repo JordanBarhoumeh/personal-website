@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CursorGlow from '../components/CursorGlow';
 import { ClientRouter } from 'astro:transitions';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props { title?: string; description?: string }
 const { title, description = 'Jordan Barhoumeh: data scientist, AI engineer and app developer.' } = Astro.props;
@@ -21,12 +22,10 @@ const fullTitle = title ? `${title} · Jordan Barhoumeh` : 'Jordan Barhoumeh';
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
     <ClientRouter />
     <script is:inline>
-      document.documentElement.classList.add('js');
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
@@ -50,11 +49,16 @@ const fullTitle = title ? `${title} · Jordan Barhoumeh` : 'Jordan Barhoumeh';
       // scroll-in reveal for .reveal elements (re-run after each client-side navigation)
       function initReveal() {
         const els = document.querySelectorAll<HTMLElement>('.reveal:not(.in)');
+        // content already on screen is shown immediately; only what is below the fold animates in
+        els.forEach((el) => {
+          if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in', 'instant');
+        });
+        document.documentElement.classList.add('reveal-ready');
         if (!('IntersectionObserver' in window)) return els.forEach((el) => el.classList.add('in'));
         const io = new IntersectionObserver((entries) => {
           for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
         }, { rootMargin: '0px 0px -8% 0px' });
-        els.forEach((el) => io.observe(el));
+        els.forEach((el) => { if (!el.classList.contains('in')) io.observe(el); });
       }
       document.addEventListener('astro:page-load', initReveal);
     </script>

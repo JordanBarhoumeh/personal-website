@@ -11,7 +11,8 @@ import { experiences, education, skillGroups, certifications } from '../data/pro
     <p class="mt-6 max-w-xl text-lg text-muted">From running a team on the floor to shipping ML in production. Newest first.</p>
   </section>
 
-  <section class="mx-auto max-w-5xl px-6 pb-24">
+  <section class="mx-auto max-w-5xl px-6 pb-24" aria-labelledby="roles">
+    <h2 id="roles" class="sr-only">Roles</h2>
     <ExperienceTimeline client:load items={experiences} />
   </section>
 

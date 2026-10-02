@@ -30,6 +30,21 @@ export default function ThemeToggle() {
     document.startViewTransition(apply).finished.finally(() => root.removeAttribute("data-theme-vt"));
   };
 
+  const icon = (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={theme}
+        initial={{ rotate: -90, scale: 0.4, opacity: 0 }}
+        animate={{ rotate: 0, scale: 1, opacity: 1 }}
+        exit={{ rotate: 90, scale: 0.4, opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="grid place-items-center"
+      >
+        {theme === "light" ? <Moon className="h-[18px] w-[18px]" /> : <Sun className="h-[18px] w-[18px]" />}
+      </motion.span>
+    </AnimatePresence>
+  );
+
   return (
     <button
       type="button"
@@ -37,32 +52,23 @@ export default function ThemeToggle() {
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
       className="relative grid h-10 w-10 place-items-center rounded-full"
     >
-      <LiquidGlass
-        cornerRadius={999}
-        padding="0"
-        displacementScale={50}
-        blurAmount={0.06}
-        saturation={140}
-        aberrationIntensity={1.5}
-        elasticity={0.25}
-        overLight={theme === "light"}
-        style={{ position: "absolute", top: "50%", left: "50%" }}
-      >
-        <span className="grid h-10 w-10 place-items-center text-text">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={theme}
-              initial={{ rotate: -90, scale: 0.4, opacity: 0 }}
-              animate={{ rotate: 0, scale: 1, opacity: 1 }}
-              exit={{ rotate: 90, scale: 0.4, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="grid place-items-center"
-            >
-              {theme === "light" ? <Moon className="h-[18px] w-[18px]" /> : <Sun className="h-[18px] w-[18px]" />}
-            </motion.span>
-          </AnimatePresence>
-        </span>
-      </LiquidGlass>
+      {/* dark theme: refractive liquid glass */}
+      <span className="only-dark absolute inset-0">
+        <LiquidGlass
+          cornerRadius={999}
+          padding="0"
+          displacementScale={50}
+          blurAmount={0.06}
+          saturation={140}
+          aberrationIntensity={1.5}
+          elasticity={0.25}
+          style={{ position: "absolute", top: "50%", left: "50%" }}
+        >
+          <span className="grid h-10 w-10 place-items-center text-text">{icon}</span>
+        </LiquidGlass>
+      </span>
+      {/* light theme: clean frosted glass */}
+      <span className="only-light glass absolute inset-0 grid place-items-center rounded-full text-text">{icon}</span>
     </button>
   );
 }
