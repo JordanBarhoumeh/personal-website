@@ -1,0 +1,36 @@
+---
+title: Sample post for previewing the layout
+description: A draft that exists only to preview the blog design. It never appears on the live site.
+date: 2026-10-01
+tags: [Sample]
+draft: true
+---
+
+This is a **sample draft** used to preview typography, code blocks and the table of contents. It is hidden from the published site because `draft: true`. Delete it once there is a real post.
+
+## Headings get anchors
+
+Each `h2` and `h3` appears in the table of contents beside the post and gets a link you can share.
+
+### Code looks like this
+
+```ts
+type Report = { address: string; summary: string };
+
+export async function buildReport(address: string): Promise<Report> {
+  const context = await gatherData(address);
+  return generate(context);
+}
+```
+
+Inline `code` is styled too, and lists work:
+
+- First point
+- Second point
+- Third point
+
+> Quotes get an amber rule on the left.
+
+## Where the real posts go
+
+Add a file to `src/content/blog/`, give it a title, description and date, and it shows up on the blog index automatically.

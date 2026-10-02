@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts, readingTime, formatDate } from '../../lib/blog';
+
+const posts = await getPosts();
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+<Base title="Blog" description="Build logs and notes on the apps and AI systems I am making.">
+  <section class="mx-auto max-w-3xl px-6 pb-10 pt-32">
+    <p class="font-mono text-sm text-primary">Blog</p>
+    <h1 class="mt-3 text-5xl font-semibold leading-[1.02] sm:text-7xl">Build log<span class="text-primary">.</span></h1>
+    <p class="mt-6 max-w-xl text-lg text-muted">Notes on the apps and AI systems I am making, written as I build them.</p>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-6 pb-28">
+    {posts.length === 0 ? (
+      <div class="reveal rounded-2xl border border-dashed border-border p-10 text-center">
+        <p class="text-lg">The first post is on its way.</p>
+        <p class="mt-2 text-muted">In the meantime, take a look at the <a href="/projects" class="text-primary underline-offset-4 hover:underline">projects</a>.</p>
+      </div>
+    ) : (
+      <>
+        {tags.length > 1 && (
+          <div class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filter by tag" id="tag-filter">
+            <button type="button" data-tag="" aria-pressed="true" class="tag-btn rounded-full border border-border px-3 py-1 font-mono text-xs transition-colors">All</button>
+            {tags.map((t) => <button type="button" data-tag={t} aria-pressed="false" class="tag-btn rounded-full border border-border px-3 py-1 font-mono text-xs transition-colors">{t}</button>)}
+          </div>
+        )}
+        <ul class="divide-y divide-border border-y border-border" id="post-list">
+          {posts.map((p, i) => (
+            <li class="reveal" data-tags={p.data.tags.join('|')} style={`transition-delay:${i * 60}ms`}>
+              <a href={`/blog/${p.id}`} class="group block py-7">
+                <div class="flex items-baseline justify-between gap-6 font-mono text-xs tabular-nums text-muted">
+                  <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date)}</time>
+                  <span>{readingTime(p.body)} min read{p.data.draft ? ' · draft' : ''}</span>
+                </div>
+                <h2 class="mt-2 text-2xl font-semibold transition-transform duration-300 group-hover:translate-x-1.5 group-hover:text-primary">{p.data.title}</h2>
+                <p class="mt-2 text-muted">{p.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </section>
+</Base>
+
+<style is:global>
+  .tag-btn[aria-pressed="true"] { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+  .tag-btn[aria-pressed="false"]:hover { border-color: color-mix(in oklab, var(--primary) 60%, transparent); }
+</style>
+
+<script>
+  function initTags() {
+    const wrap = document.getElementById('tag-filter');
+    if (!wrap) return;
+    wrap.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('.tag-btn');
+      if (!btn) return;
+      const tag = btn.dataset.tag ?? '';
+      wrap.querySelectorAll('.tag-btn').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      document.querySelectorAll<HTMLElement>('#post-list > li').forEach((li) => {
+        const has = !tag || (li.dataset.tags ?? '').split('|').includes(tag);
+        li.hidden = !has;
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initTags);
+</script>

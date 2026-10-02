@@ -8,5 +8,8 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   integrations: [react(), mdx(), sitemap()],
+  markdown: {
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false, wrap: false },
+  },
   vite: { plugins: [tailwindcss()] },
 });
